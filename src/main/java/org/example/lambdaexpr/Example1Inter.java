@@ -13,6 +13,6 @@ public interface Example1Inter<T> {
         listT.add(a);
         listT.add(b);
         return listT;
-    };
+    }
 
 }
