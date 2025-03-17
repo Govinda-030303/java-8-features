@@ -1,0 +1,26 @@
+1. example1.java
+the foreach() method in java is a utility function to iterate over a collection( list, set or map)
+-------------------
+the foreach() method is available in the following classes and interfaces:
+a. iterable interface : this makes Iterable.forEach() method available to all collection classes expect map.
+b. Map interface : this make forEach() operation available to all the map classes.
+c. Stream interface : this makes forEach() and forEachOrdered() operations available to all types of Streams.
+
+____________________________________________________
+Internally, the forEach() uses the enhanced for-loop for iterating through the collection items. So using the enhanced for-loop will give the same performance as forEach() method.
+
+default void forEach(Consumer<? super T> action) {
+    Objects.requireNonNull(action);
+    for (T t : this) {
+        action.accept(t);
+    }
+}
+____________________________________________________
+
+
+2. Example2.java
+In Stream, forEach() and forEachOrdered() are terminal operations. Similar to Iterable, stream forEach() performs an action for each element of the Stream.
+there are two types of streams:
+a. sequential streams: For sequential streams, the order of elements (during iteration) is same as the order in the stream source, so the output would be the same whether we use forEach() or forEachOrdered().
+b. parallel streams: For parallel streams, use forEachOrdered() if the order of the elements matters during the iteration. The forEach() method does not guarantee the element ordering to provide the advantages of parallelism.
+

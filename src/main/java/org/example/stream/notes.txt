@@ -1,0 +1,136 @@
+link = https://howtodoinjava.com/java/stream/java-streams-by-examples/#1-what-is-a-stream
+------
+
+Stream in java = sequence of elements from a source.
+The source of elements here refers to a Collection or Array that provides data to the Stream.
+a. Java streams are designed in such a way that most of the stream operations (called intermediate operations) return a Stream. This helps to create a chain of stream operations. This is called a stream pipeline.
+b. Java streams also support the aggregate or terminal operations on the elements.
+== The aggregate operations are operations that allow us to express common manipulations on stream elements quickly and clearly, for example, finding the max or min element, finding the first element matching giving criteria, and so on.
+
+_______________
+Note: streams maintains the same ordering of elements as the ordering in the stream soruce.
+_______________
+
+what is stream:
+All of us have watched online videos on YouTube. When we start watching a video, a small portion of the video file is first loaded into our computer and starts playing. we don’t need to download the complete video before we start watching it. This is called video streaming. At a very high level, we can think of the small portions of the video file as a stream and the whole video as a Collection.
+_______________________
+note:
+a. At the granular level, the difference between a Collection and a Stream is when the things are computed. A Collection is an in-memory data structure that holds all the data structure’s values. Every element in the Collection has to be computed before it can be added to the Collection. While a Stream is conceptually a pipeline in which elements are computed on demand.
+b. This concept gives rise to significant programming benefits. The idea is that a user will extract only the values they require from a Stream, and these elements are produced invisibly to the user, as and when required. This is a form of a producer-consumer relationship.
+_______________________
+In Java, java.util.Stream interface represents a stream on which one or more operations can be performed.
+
+a. Stream operations are either intermediate or terminal. The terminal operations return a result of a certain type, and intermediate operations return the stream itself so we can chain multiple methods in a row to perform the operation in multiple steps.
+b. Streams are created on a source, e.g. a java.util.Collection like List or Set. The Map is not supported directly, we can create a stream of map keys, values or entries.
+c. Stream operations can either be executed sequentially or in parallel. when performed parallelly, it is called a parallel stream.
+
+Based on the above points, we can say that a Stream is:
+
+a.Designed for lambdas or functional programming
+b. Not a data structure to store objects
+c. Do not support indexed access
+d. Can easily be aggregated as arrays or lists
+e. Lazy access supported
+f. Parallelizable
+
+-----------------------------------
+
+Example1.java
+1. creating streams
+popular ways to build streams from collection:
+a. Stream.of()
+b. Stream.of(Array)
+c. List.stream()
+d. Stream.generate() or Stream.iterate()
+e. Stream of String chars or tokens
+
+Example2.java
+After performing the intermediate operations on elements in the stream, we can collect the processed elements again into a Collection using the stream Collector methods.
+a. Collect Stream Elements to a List
+b. Collect Stream Elements to an Array
+
+
+Example3.java
+Stream abstraction has a long list of useful functions. Let us look at a few of them.
+These core methods have been divided into 2 parts given below:
+a. Intermediate Operations= Intermediate operations return the stream itself so you can chain multiple methods calls in a row. Let’s learn important ones.
+a.1 Stream.filter()
+a.2 Stream.map()
+a.3  Stream.sorted()
+
+b. Terminal operations= Terminal operations return a result of a certain type after processing all the stream elements.
+Once the terminal operation is invoked on a Stream, the iteration of the Stream and any of the chained streams will get started. Once the iteration is done, the result of the terminal operation is returned.
+b.1 Stream.forEach()
+b.2 Stream.collect()
+b.3 Stream.match()
+b.4 Stream.count()
+b.5 Stream.reduce()
+
+
+c.  Short-circuit Operations= Though stream operations are performed on all elements inside a collection satisfying a Predicate, it is often desired to break the operation whenever a matching element is encountered during iteration.
+                              In external iteration, we will do with the if-else block. In the internal iterations such as in streams, there are certain methods we can use for this purpose.
+c.1 Stream.anyMatch()
+c.2 Stream.findFirst()
+
+
+______________________________________
+notes:
+
+7. Stream Methods
+7.1 Creating Streams
+concat()
+empty()
+generate()
+iterate()
+of()
+7.2 Intermediate Operations
+filter()
+map()
+flatMap()
+distinct()
+sorted()
+peek()
+limit()
+skip()
+7.3. Terminal Operations
+forEach()
+forEachOrdered()
+toArray()
+reduce()
+collect()
+min()
+max()
+count()
+anyMatch()
+allMatch()
+noneMatch()
+findFirst()
+findAny()
+__________________________
+end
+_____________
+
+
+for more :
+boxed streams : streams works only on objects.
+a boxed stream is a stream of the wrapper class instances to simulate a stream of primitives.
+
+n Stream API, a stream of primitives can be represented by the following 3 classes:
+
+IntStream
+LongStream
+DoubleStream
+To convert from a stream of primitives to a stream of objects, these classes provide boxed() method that returns a Stream consisting of the elements of the given stream, each boxed to an object of the corresponding wrapper class.
+Stream<Integer> stream = IntStream.of(1, 2, 3, 4, 5).boxed();
+
+Stream<Long> stream1 = LongStream.of(1, 2, 3, 4, 5).boxed();
+
+Stream<Double> stream2 = DoubleStream.of(1.0, 2.0, 3.0, 4.0, 5.0).boxed();
+
+//Compilation issue
+/*List<Integer> list = IntStream.of(1,2,3,4,5)
+    .collect(Collectors.toList());*/
+//Works fine
+List<Integer> list = IntStream.of(1,2,3,4,5)
+    .boxed()
+    .collect(Collectors.toList());

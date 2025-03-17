@@ -1,0 +1,20 @@
+Example1.java
+what is lambda function:
+*a Lambda expression (or function) is an anonymous function, i.e., a function without any name or identifier, and with a list of formal parameters and a body. An arrow (->) is used to separate the list of parameters and the body.
+*lambda expressions are also typed, and their type is a functional interface type. To infer the type, the compiler looks at the left side of the assignment in a lambda expression.
+*Note that the lambda expression itself does not contain the information about which functional interface it is implementing. This information is deduced from the context in which expression is used.
+*Two good examples of functional interface types are Consumer and BiConsumer interfaces that are heavily used in Stream API for creating lambda expressions.
+
+----------
+Features of Lambda Expressions in Java
+Concise Syntax – Eliminates boilerplate code for anonymous inner classes.
+Functional Interface Support – Can be used only with interfaces having a single abstract method.
+Type Inference – Compiler infers parameter types automatically.
+Eliminates Anonymous Classes – Replaces instances of anonymous inner classes for functional interfaces.
+Supports Parameters and Return Values – Can accept multiple parameters and return values.
+Access to Outer Variables – Can access effectively final local variables from the enclosing scope.
+Can Be Assigned to Functional Interfaces – Works with Predicate, Function, Consumer, Supplier, etc.
+Thread-Safety – Since lambdas do not maintain state, they are inherently thread-safe.
+Improves Readability – Simplifies inline implementation of functional behavior.
+Compatible with Streams API – Works seamlessly with Java Streams for functional-style operations.
+-------------------

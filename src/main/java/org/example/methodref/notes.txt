@@ -1,0 +1,26 @@
+link = https://howtodoinjava.com/java8/lambda-method-references-example/
+
+
+the method references are a way to refer to methods or constructors without invoking them. They are a shorthand notation of a lambda expression and can be used anywhere a functional interface is expected.
+The method references are denoted using ‘Class::methodName‘ type syntax
+
+1. Types of method references:
+ java allow four types of method reference:
+ a. method reference to static method:
+    description: used to refer to static method from class.
+    syntax: className::staticMethodName
+ b. method reference to instance method from a specified instance:
+    description: Refer to an instance method using a reference to the supplied object
+    syntax: instance::instanceMethodName
+ c. method reference to instance method from the class type:
+    description: Invoke the instance method on a reference to an object supplied by the context
+    syntax: ClassName::instanceMethodName
+ d. method reference to constructor:
+    description: Reference to a constructor
+    syntax: ClassName::new
+
+________________
+note: Please note that the method references always utilize the :: operator
+________________
+
+

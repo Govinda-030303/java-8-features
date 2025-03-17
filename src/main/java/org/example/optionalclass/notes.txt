@@ -1,0 +1,72 @@
+*All of us must have encountered NullPointerException in our applications. It happens when you try to use an object that has not been initialized, initialized with null or does not point to any instance. In simple words, NULL simply means ‘absence of a value’.
+
+*Problems when using null?=
+=>To avoid NullPointerException, always check API documentation for potential null returns. Since missing this can lead to bugs, a best practice is to initialize references with default values whenever possible. However, when no default exists, use:
+
+  1.Optional<T> – Encapsulates nullability and forces handling.
+  2.Null checks – Use Objects.requireNonNull() or explicit checks.
+  3.Fail-fast approach – Throw exceptions early for invalid states.
+Being mindful of null handling reduces runtime errors and improves code reliability.
+
+1. null is type in java
+Using null in Java can lead to several problems, including NullPointerException (NPE) and unexpected behavior. Here are the main issues:
+
+1. NullPointerException (NPE)
+Trying to call a method or access a field on null results in an NPE.
+java
+Copy code
+String str = null;
+int length = str.length(); // Throws NullPointerException
+2. Unintended Behavior
+If a method expects an object but gets null, it may behave unpredictably.
+java
+Copy code
+public void printName(String name) {
+    System.out.println("Name: " + name.toUpperCase()); // May throw NPE if name is null
+}
+3. Difficult Debugging
+null can propagate through multiple method calls, making it hard to trace the source of an issue.
+4. Inconsistent Return Values
+Methods that return null instead of an empty object can lead to unexpected errors.
+java
+Copy code
+public List<String> getNames() {
+    return null; // Better to return Collections.emptyList()
+}
+5. Increased Code Complexity
+Extra null checks increase code complexity and reduce readability.
+java
+Copy code
+if (obj != null) {
+    obj.doSomething();
+}
+_____________________________________________________________________________
+How does an Optional fix the Problem?
+Java Optional is a way of replacing a nullable T reference with a non-null value. An Optional may either contain a non-null T reference (in which case we say the value is “present”), or it may contain nothing (in which case we say the value is “absent”).
+
+Remember that it is never said that an optional “contains null“.
+
+Optional<Integer> optional = Optional.of(5);
+optional.isPresent();          // returns true
+optional.get();              // returns 5
+
+Optional<Integer> optional1 = Optional.empty();
+optional1.isPresent();          // returns false
+
+We can also assume Optional as a single-value container that either contains a value or doesn’t.
+
+___________________________
+Please note that Optional is not meant to be used in these below contexts, as possibly it won’t buy us anything:
+
+in the domain model layer (it’s not serializable)
+in DTOs (it’s not serializable)
+in input parameters of methods
+in constructor parameters
+____________________________________________________
+orElse(value)	Simple default value
+orElseGet(supplier)	Computed default value (avoids unnecessary computation)
+ifPresent(action)	Execute action if value is present
+ifPresentOrElse(action, emptyAction)	Execute different actions based on presence
+or(supplier)	Provide an alternative Optional if empty
+orElseThrow(exceptionSupplier)	Throw an exception if value is missing
+

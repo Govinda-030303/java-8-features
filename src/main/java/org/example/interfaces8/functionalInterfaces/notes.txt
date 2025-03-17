@@ -1,0 +1,24 @@
+What is a Functional Interface?
+Only one abstract method is allowed: Single Abstract Method interfaces (SAM Interfaces).
+Apart from one abstract method, a functional interface can also have the following methods that do not count for defining it as a functional interface.
+
+a.Default methods
+b.Static methods
+c.Public methods inherited from the Object class
+
+Implemented by Lambda Expressions
+
+The following is a list of Java’s most commonly used functional interfaces.
+
+Runnable: contains only the run() method.
+Comparable: contains only the compareTo() method.
+ActionListener: contains only the actionPerformed() method.
+Callable: contains only the call() method.
+Predicate: a boolean-valued function that takes an argument and returns true or false.
+BiPredicate: a predicate with two arguments.
+Consumer: an operation that takes an argument, operates on it, and returns no result.
+BiConsumer: a consumer with two arguments.
+Supplier: a supplier that returns a value.
+Function<T, R>:  takes an argument of type T and returns a result of type R.
+BiFunction<T, U, R>: takes two arguments of types T and U and returns a result of type R.
+
