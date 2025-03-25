@@ -1,0 +1,158 @@
+MapStruct automatically analyzes the fields to map between two objects based on a few rules and conventions. Here's how it works, and how it decides which fields to map and which not to:
+
+### 1. **Field Name Matching**
+MapStruct first looks at the **field names** of the source and target classes. If the field names are identical in both classes, MapStruct will automatically map those fields.
+
+#### Example:
+If your `UserEntity` and `UserDTO` have fields with the same name (like `id` and `name`), MapStruct will automatically map these fields from source (`UserEntity`) to target (`UserDTO`).
+
+```java
+public class UserEntity {
+    private Long id;       // Automatically maps to id in UserDTO
+    private String name;   // Automatically maps to name in UserDTO
+    private String email;  // Will be ignored (not in UserDTO)
+}
+```
+
+```java
+public class UserDTO {
+    private Long id;
+    private String name;
+}
+```
+
+- `id` in `UserEntity` will be mapped to `id` in `UserDTO`.
+- `name` in `UserEntity` will be mapped to `name` in `UserDTO`.
+- `email` in `UserEntity` won't be mapped because `UserDTO` doesn't have an `email` field.
+
+### 2. **Type Compatibility**
+MapStruct will map fields if they are of **compatible types**. For instance, if the field type in both the source and target are the same, or one can be implicitly converted to the other (e.g., `String` to `Integer`), MapStruct will automatically map the field.
+
+#### Example:
+```java
+public class UserEntity {
+    private String id;  // String type
+}
+
+public class UserDTO {
+    private Long id;    // Long type
+}
+```
+
+In this case, MapStruct will generate a conversion from `String` to `Long`, because it can infer how to convert these types. However, if types are not compatible, you'd need to define a custom mapping.
+
+### 3. **Custom Mapping**
+If the field names are different or if the types cannot be converted automatically, you can define **custom mappings** using annotations.
+
+#### Example of Custom Field Name Mapping:
+If you have a source field `user_name` and a target field `name`, you can specify how to map them using `@Mapping`.
+
+```java
+@Mapper
+public interface UserMapper {
+
+    @Mapping(source = "user_name", target = "name")  // Custom mapping
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+### 4. **Ignoring Fields**
+If you don’t want a specific field to be mapped, you can explicitly **ignore** it using the `@Mapping` annotation with `ignore = true`.
+
+#### Example:
+If you don't want the `email` field to be mapped from `UserEntity` to `UserDTO`, you can use:
+
+```java
+@Mapper
+public interface UserMapper {
+
+    @Mapping(target = "email", ignore = true)  // Ignore the email field
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+### 5. **Field Mapping for Different Types**
+If the fields have different types, MapStruct will try to generate a conversion if possible. However, if the types are complex (e.g., a field is an object that needs to be mapped separately), you might need to create a custom method or use additional mappers.
+
+#### Example:
+If `UserEntity` has a `Date` field, and `UserDTO` has a `String` field, you can use a custom mapping method or a type conversion method.
+
+```java
+@Mapper
+public interface UserMapper {
+
+    @Mapping(source = "birthDate", target = "birthDate", dateFormat = "yyyy-MM-dd")
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+In the above, the `birthDate` field in the `UserEntity` (which is of type `Date`) will be converted to a formatted `String` in the `UserDTO`.
+
+### 6. **Nested Mappings (Mapping Embedded Objects)**
+If one field is another object (like a `UserAddress` object inside a `UserEntity`), MapStruct will try to map it if there's a corresponding mapping method for the nested object.
+
+#### Example:
+```java
+public class UserEntity {
+    private Long id;
+    private String name;
+    private UserAddress address;  // Nested object
+}
+
+public class UserDTO {
+    private Long id;
+    private String name;
+    private UserAddressDTO address;  // Nested DTO
+}
+```
+
+If there's a corresponding `UserAddressMapper` interface for mapping the `UserAddress` object to `UserAddressDTO`, MapStruct will use it.
+
+```java
+@Mapper
+public interface UserMapper {
+
+    @Mapping(target = "address", source = "address")
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+MapStruct will call `UserAddressMapper` to handle the conversion of the `address` field from `UserEntity` to `UserAddressDTO`.
+
+### 7. **Mapping Collections**
+MapStruct can also map collections (like `List` or `Set`). If a field is a collection, MapStruct will map the items inside the collection using the relevant mapping method for the item type.
+
+#### Example:
+```java
+public class UserEntity {
+    private List<OrderEntity> orders;
+}
+
+public class UserDTO {
+    private List<OrderDTO> orders;
+}
+
+@Mapper
+public interface UserMapper {
+
+    List<OrderDTO> ordersToOrderDTOs(List<OrderEntity> orders);
+
+    @Mapping(source = "orders", target = "orders")
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+Here, MapStruct will use the `ordersToOrderDTOs` method to map each `OrderEntity` in the `orders` list to `OrderDTO`.
+
+---
+
+### In Summary:
+
+- **Field Name Matching**: MapStruct maps fields with the same name automatically.
+- **Type Compatibility**: MapStruct will map fields with compatible types (e.g., `String` to `Long`).
+- **Custom Mapping**: You can define custom mappings if the field names or types don't match.
+- **Ignore Fields**: Use `@Mapping(target = "field", ignore = true)` to prevent a field from being mapped.
+- **Nested Mappings**: MapStruct can handle nested object mappings if there are corresponding mappers.
+- **Collections**: MapStruct can map collections, using the appropriate methods for items in the collection.
+
+This behavior ensures that MapStruct is flexible enough for a wide range of mapping scenarios while keeping the mappings simple and maintainable.

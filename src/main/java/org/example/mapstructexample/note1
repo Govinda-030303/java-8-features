@@ -1,0 +1,160 @@
+### What is MapStruct in Java?
+
+**MapStruct** is a Java annotation processor that generates bean mapping code, i.e., code for converting one Java object to another. It's typically used in scenarios where you need to map between different layers in an application, like converting entities to DTOs (Data Transfer Objects) or vice versa. MapStruct generates type-safe, efficient code for mapping one object to another during the compile-time.
+
+Key benefits of using MapStruct include:
+- **Performance**: The generated code is based on standard Java and doesn’t require reflection, making it fast.
+- **Compile-time Safety**: Errors in mappings are detected at compile time.
+- **Ease of Use**: You only need to define the mappings in interfaces with annotations; MapStruct will handle the implementation.
+
+---
+
+### Setting Up MapStruct with Gradle in Java
+
+To integrate **MapStruct** into your Gradle project, follow these steps:
+
+1. **Add Dependencies to `build.gradle`**
+
+   You need to add MapStruct dependencies to your Gradle configuration:
+
+   ```groovy
+   plugins {
+       id 'java'
+   }
+
+   repositories {
+       mavenCentral()
+   }
+
+   dependencies {
+       implementation 'org.mapstruct:mapstruct:1.5.3.Final'  // MapStruct library
+       annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final' // Annotation Processor
+   }
+
+   // Enable annotation processing during the build
+   tasks.withType(JavaCompile) {
+       options.annotationProcessorPath = configurations.annotationProcessor
+   }
+   ```
+
+   In this setup:
+   - `mapstruct`: The core MapStruct library.
+   - `mapstruct-processor`: The annotation processor for generating the implementation code.
+
+2. **Enable Annotation Processing in Gradle**
+
+   Gradle uses annotation processors to generate code during compilation. The `tasks.withType(JavaCompile)` block ensures that the annotation processor is applied to the Java source compilation process.
+
+---
+
+### Real World Example with Explanation
+
+Let's take a simple example where you need to map between an entity (`UserEntity`) and a Data Transfer Object (`UserDTO`). This is common in applications that expose APIs (e.g., in Spring Boot apps).
+
+#### 1. **Create the Entity and DTO**
+
+**UserEntity.java**:
+
+```java
+public class UserEntity {
+    private Long id;
+    private String name;
+    private String email;
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+}
+```
+
+**UserDTO.java**:
+
+```java
+public class UserDTO {
+    private Long id;
+    private String name;
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+}
+```
+
+Here, `UserDTO` is a simplified version of the `UserEntity` object, excluding the email field.
+
+#### 2. **Create the Mapper Interface**
+
+**UserMapper.java**:
+
+```java
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface UserMapper {
+
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+    UserDTO userEntityToUserDTO(UserEntity userEntity);
+}
+```
+
+Explanation:
+- `@Mapper`: This annotation tells MapStruct to generate a mapper for the interface.
+- `UserMapper.INSTANCE`: MapStruct generates the implementation of this interface at compile-time. `Mappers.getMapper` is used to get an instance of the generated mapper.
+- `userEntityToUserDTO`: The method to map `UserEntity` to `UserDTO`. MapStruct generates the actual implementation based on this method signature.
+
+#### 3. **Using the Mapper**
+
+**Main.java**:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        // Create a sample UserEntity
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setName("John Doe");
+        userEntity.setEmail("john.doe@example.com");
+
+        // Use the MapStruct Mapper
+        UserDTO userDTO = UserMapper.INSTANCE.userEntityToUserDTO(userEntity);
+
+        // Print the UserDTO
+        System.out.println("UserDTO ID: " + userDTO.getId());
+        System.out.println("UserDTO Name: " + userDTO.getName());
+    }
+}
+```
+
+Explanation:
+- The `UserMapper.INSTANCE.userEntityToUserDTO` call maps the `UserEntity` to `UserDTO`. MapStruct generates the actual code for this mapping at compile-time.
+- In this case, the `email` field in the `UserEntity` is ignored because `UserDTO` doesn’t have it.
+
+#### 4. **Compile and Run**
+
+Once you've set up the Gradle configuration and implemented the classes, you can compile and run your project. MapStruct will generate the code for the `UserMapper` interface, and when you run the application, you'll see the output of the `UserDTO` with the mapped fields.
+
+---
+
+### Conclusion
+
+MapStruct provides an efficient and type-safe way of mapping between objects in Java. In the example above, the conversion of a `UserEntity` to a `UserDTO` was achieved with minimal boilerplate code by leveraging annotations. This approach helps avoid manually writing the conversion logic and reduces errors while improving maintainability and performance.
+
+---
+
+### Key Points:
+1. **MapStruct is used for object mapping**, typically for converting between entities and DTOs.
+2. You set it up in Gradle by adding dependencies and enabling annotation processing.
+3. It **generates mapping code at compile-time**, ensuring type safety and performance.
+4. In a real-world application, MapStruct is often used in frameworks like **Spring Boot** to map entities to DTOs for API responses.
+
